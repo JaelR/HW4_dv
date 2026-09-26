@@ -50,10 +50,10 @@ def load_data(path: Path) -> pd.DataFrame:
     median_flux = df["flux"].median()
     df["rel_flux"] = df["flux"] / median_flux
     if "flux_err" in df.columns:
-            df["rel_flux_err"] = df["flux_err"] / median_flux
-        else:
-            df["rel_flux_err"] = 0.0
-    
+        df["rel_flux_err"] = df["flux_err"] / median_flux
+    else:
+        df["rel_flux_err"] = 0.0
+
     # Quality flag
     if "sap_quality" in df.columns:
         df["sap_quality"] = df["sap_quality"].fillna(0).astype(int)
