@@ -62,8 +62,8 @@ notebook, showing an empirical alternative to the ±2σ assumption.
 
 ### 1. Jupyter notebook (primary)
 
-- `kepler_lightcurve.ipynb` — executed notebook with outputs saved.
-- `kepler_lightcurve.html` — self-contained HTML export of the executed notebook.
+- `kepler_light.ipynb` — executed notebook with outputs saved.
+- `kepler_light.html` — self-contained HTML export of the executed notebook.
 
 **To view:** open the `.html` file in any browser — no installation needed.
 
@@ -74,7 +74,7 @@ python -m venv .venv
 .venv\Scripts\activate            # Windows
 # source .venv/bin/activate       # macOS / Linux
 pip install -r requirements.txt
-jupyter notebook kepler_lightcurve.ipynb
+jupyter notebook kepler_light.ipynb
 ```
 
 Then **Run All** in the notebook.
@@ -101,8 +101,8 @@ Opens at `http://localhost:8501`.
 ├── README.md
 ├── requirements.txt
 ├── kic11395018_lightcurve.csv        # the dataset
-├── kepler_lightcurve.ipynb           # executed notebook (source + outputs)
-├── kepler_lightcurve.html            # exported HTML (self-contained)
+├── kepler_light.ipynb           # executed notebook (source + outputs)
+├── kepler_light.html            # exported HTML (self-contained)
 └── app.py                            # Streamlit version
 ```
 
