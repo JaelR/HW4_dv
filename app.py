@@ -6,6 +6,7 @@ Dataset: KIC 11395018, Kepler long-cadence stitched light curve
          (FITS: hlsp_kepler.fits, extension LIGHTCURVE_STITCHED)
          https://mast.stsci.edu/portal/Mashup/Clients/Mast/Portal.html
 """
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -20,33 +21,46 @@ st.caption(
 )
 
 
-# ---------------- Data Loading ----------------
-DATA_FILE = "C:/Users/Jael Rojas/Documents/MS_DataScience/DS_III semester/DV/Assig/HW4/kic11395018_lightcurve.csv"
+# ---------------- Data Path (works locally AND on Streamlit Cloud) ----------------
+HERE = Path(__file__).resolve().parent
+DATA_FILE = HERE / "kic11395018_lightcurve.csv"
 
+st.write(f"Looking for: `{DATA_FILE}`")
+st.write(f"Exists: `{DATA_FILE.exists()}`")
+
+if not DATA_FILE.exists():
+    st.error(
+        f"Data file not found at `{DATA_FILE}`. "
+        f"Make sure `kic11395018_lightcurve.csv` is committed to the repo "
+        f"at the same level as `app.py`."
+    )
+    st.stop()
+
+
+# ---------------- Data Loading ----------------
 @st.cache_data
-def load_data(path: str) -> pd.DataFrame:
+def load_data(path: Path) -> pd.DataFrame:
     df = pd.read_csv(path)
 
     # Convert BJD (days since 2454833, Kepler launch epoch) to datetime
-    epoch = pd.Timestamp("2009-05-02")   # BJD 2454833 ~ 2009-05-02
+    epoch = pd.Timestamp("2009-05-02")
     df["datetime"] = epoch + pd.to_timedelta(df["time"], unit="D")
 
     # Relative flux centered near 1.0
     median_flux = df["flux"].median()
     df["rel_flux"] = df["flux"] / median_flux
     if "flux_err" in df.columns:
-        df["rel_flux_err"] = df["flux_err"] / median_flux
-    else:
-        df["rel_flux_err"] = 0.0
-
-    # Clean quality flag (may contain NaNs after dropna earlier)
+            df["rel_flux_err"] = df["flux_err"] / median_flux
+        else:
+            df["rel_flux_err"] = 0.0
+    
+    # Quality flag
     if "sap_quality" in df.columns:
         df["sap_quality"] = df["sap_quality"].fillna(0).astype(int)
     else:
         df["sap_quality"] = 0
 
     return df.sort_values("datetime").reset_index(drop=True)
-
 
 try:
     df = load_data(DATA_FILE)
